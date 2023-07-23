@@ -1,21 +1,18 @@
 package com.example.sixneek.article.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @Slf4j
 @Getter
-@NoArgsConstructor()
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Article {
-    @id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "article_id")
     private Long id;
     private String tag;
     private String title;
