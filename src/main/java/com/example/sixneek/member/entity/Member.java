@@ -2,30 +2,26 @@ package com.example.sixneek.member.entity;
 
 import com.example.sixneek.like.entity.Like;
 import com.example.sixneek.readed.entity.Readed;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.Email;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
-    @Email
     @Column(nullable = false)
     private String email;
 
@@ -55,15 +51,4 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Like> likeList = new ArrayList<>();
-
-    public Member(String email, String password, String nickname, String birth, String gender, String emoji, String interests, String job) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.birth = birth;
-        this.gender = gender;
-        this.emoji = emoji;
-        this.interests = interests;
-        this.job = job;
-    }
 }
