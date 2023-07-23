@@ -4,7 +4,6 @@ import com.example.sixneek.like.entity.Like;
 import com.example.sixneek.readed.entity.Readed;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,8 +13,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +28,8 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
-    @Column
-    private String birth;
+    @Column(name = "birth_year")
+    private String birthYear;
 
     @Column
     private String gender;
@@ -51,4 +48,10 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<Like> likeList = new ArrayList<>();
+
+    public Member(String email, String password, String nickname) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+    }
 }

@@ -5,7 +5,6 @@ import com.example.sixneek.member.entity.Member;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "readed")
 public class Readed {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,11 +12,11 @@ public class Readed {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "article_id")
+    @JoinColumn(name = "article_id")
     private Article article;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
 }
