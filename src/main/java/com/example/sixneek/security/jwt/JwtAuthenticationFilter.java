@@ -1,8 +1,10 @@
-package com.example.sixneek.security;
+package com.example.sixneek.security.jwt;
 
 import com.example.sixneek.ApiResponseDto;
-import com.example.sixneek.jwt.JwtUtil;
 import com.example.sixneek.member.dto.LoginRequestDto;
+import com.example.sixneek.security.entity.RefreshToken;
+import com.example.sixneek.security.UserDetailsImpl;
+import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +20,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRedisRepository repository) {
         this.jwtUtil = jwtUtil;
+        this.refreshTokenRedisRepository = repository;
         setFilterProcessesUrl("/api/members/login");
     }
 
@@ -46,8 +50,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
 
-        String token = jwtUtil.createToken(email);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        // 토큰 발급
+        String accessToken = jwtUtil.createAccessToken(email);
+        String refreshToken = jwtUtil.createRefreshToken(email);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        response.addHeader(JwtUtil.REFRESH_HEADER, refreshToken);
+
+        // redis에 refresh 토큰 저장
+        RefreshToken refresh = RefreshToken.builder()
+                .id(authResult.getName())
+                .refreshToken(refreshToken)
+                .build();
+        refreshTokenRedisRepository.save(refresh);
 
         response.setStatus(200);
         response.setContentType("application/json");
