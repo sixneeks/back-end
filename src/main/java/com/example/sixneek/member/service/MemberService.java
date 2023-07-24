@@ -34,7 +34,6 @@ public class MemberService {
         return ApiResponseDto.builder()
                 .status(201)
                 .message("회원가입 성공")
-                .data(null)
                 .build();
     }
 }

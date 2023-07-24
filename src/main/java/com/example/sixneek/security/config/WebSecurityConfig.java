@@ -1,9 +1,10 @@
-package com.example.sixneek.config;
+package com.example.sixneek.security.config;
 
-import com.example.sixneek.jwt.JwtUtil;
-import com.example.sixneek.security.JwtAuthenticationFilter;
-import com.example.sixneek.security.JwtAuthorizationFilter;
+import com.example.sixneek.security.jwt.JwtAuthenticationFilter;
+import com.example.sixneek.security.jwt.JwtAuthorizationFilter;
+import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import com.example.sixneek.security.UserDetailsServiceImpl;
+import com.example.sixneek.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,7 +41,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, refreshTokenRedisRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
