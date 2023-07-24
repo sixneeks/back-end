@@ -34,18 +34,18 @@ public class ArticleService {
         Page<Article> articlesPage;
         if (tag != null && !tag.isEmpty()) {
             if (lastArticleId != null) {
-                // 태그별 조회
+                //태그별 기사 더 보기 조회
                 articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastArticleId, pageable);
             } else {
-                //태그별 조회
+                //태그별 기사 첫 조회
                 articlesPage = articleRepository.findByTag(tag, pageable);
             }
         } else {
             if (lastArticleId != null) {
-                // 전체 조회
+                //전체 기사 더 보기 조회
                 articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastArticleId, pageable);
             } else {
-                //전체 조회
+                //전체 기사 첫 조회
                 articlesPage = articleRepository.findAll(pageable);
             }
         }
