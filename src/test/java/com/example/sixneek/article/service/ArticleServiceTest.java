@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,31 +40,6 @@ public class ArticleServiceTest {
 
     @Test
     public void testGetArticles() {
-        Article article = mock(Article.class);
-        LocalDateTime now = LocalDateTime.now();
-
-        when(article.getId()).thenReturn(1L);
-        when(article.getTag()).thenReturn("tag1");
-        when(article.getTitle()).thenReturn("title1");
-        when(article.getImage()).thenReturn("image1");
-        when(article.getCreatedAt()).thenReturn(now);
-        when(article.getContent()).thenReturn("content1");
-        when(article.getLikeCount()).thenReturn(10L);
-
-        Page<Article> page = new PageImpl<>(Arrays.asList(article));
-
-        when(articleRepository.findAll(any(Pageable.class))).thenReturn(page);
-
-        List<ArticleResponseDto> response = articleService.getArticles(null, 0, 1);
-
-        assertEquals(1, response.size());
-        assertEquals(article.getTag(), response.get(0).getTag());
-        assertEquals(article.getTitle(), response.get(0).getTitle());
-        verify(articleRepository, times(1)).findAll(any(Pageable.class));
-    }
-
-    @Test
-    public void testGetMoreArticles() {
         Article article1 = mock(Article.class);
         Article article2 = mock(Article.class);
 
@@ -85,17 +61,28 @@ public class ArticleServiceTest {
         when(article2.getContent()).thenReturn("content2");
         when(article2.getLikeCount()).thenReturn(20L);
 
-        Page<Article> page = new PageImpl<>(Arrays.asList(article1, article2));
+        Page<Article> pageWithOneArticle = new PageImpl<>(Collections.singletonList(article1));
+        Page<Article> pageWithTwoArticles = new PageImpl<>(Arrays.asList(article1, article2));
 
-        when(articleRepository.findByIdLessThanOrderByIdDesc(anyLong(), any(Pageable.class))).thenReturn(page);
+        when(articleRepository.findAll(any(Pageable.class))).thenReturn(pageWithOneArticle);
+        when(articleRepository.findByIdLessThanOrderByIdDesc(anyLong(), any(Pageable.class))).thenReturn(pageWithTwoArticles);
 
-        List<ArticleResponseDto> response = articleService.getMoreArticles(null, 1L, 2);
+        // Testing getArticles with page
+        List<ArticleResponseDto> responseWithPage = articleService.getArticles(null, 0, 1, null);
 
-        assertEquals(2, response.size());
-        assertEquals(article1.getTag(), response.get(0).getTag());
-        assertEquals(article1.getTitle(), response.get(0).getTitle());
-        assertEquals(article2.getTag(), response.get(1).getTag());
-        assertEquals(article2.getTitle(), response.get(1).getTitle());
+        assertEquals(1, responseWithPage.size());
+        assertEquals(article1.getTag(), responseWithPage.get(0).getTag());
+        assertEquals(article1.getTitle(), responseWithPage.get(0).getTitle());
+        verify(articleRepository, times(1)).findAll(any(Pageable.class));
+
+        // Testing getArticles with lastPostId
+        List<ArticleResponseDto> responseWithLastPostId = articleService.getArticles(null, null, 2, 1L);
+
+        assertEquals(2, responseWithLastPostId.size());
+        assertEquals(article1.getTag(), responseWithLastPostId.get(0).getTag());
+        assertEquals(article1.getTitle(), responseWithLastPostId.get(0).getTitle());
+        assertEquals(article2.getTag(), responseWithLastPostId.get(1).getTag());
+        assertEquals(article2.getTitle(), responseWithLastPostId.get(1).getTitle());
         verify(articleRepository, times(1)).findByIdLessThanOrderByIdDesc(anyLong(), any(Pageable.class));
     }
 

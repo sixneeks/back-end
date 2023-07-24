@@ -22,42 +22,36 @@ public class ArticleService {
     //하나로 합쳐보기
 
     //기사 조회
-    public List<ArticleResponseDto> getArticles(String tag, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Article> articlesPage;
-        // null주의
-        if (tag != null) {
-            //태그별 조회
-            articlesPage = articleRepository.findByTag(tag, pageable);
+    public List<ArticleResponseDto> getArticles(String tag, Integer page, Integer size, Long lastPostId) {
+        Pageable pageable;
+
+        if (lastPostId != null && page == null) {
+            pageable = PageRequest.of(0, size);
         } else {
-            //전체 조회
-            articlesPage = articleRepository.findAll(pageable);
+            pageable = PageRequest.of(page, size);
         }
-
-        return articlesPage.stream()
-                .map(article -> new ArticleResponseDto(article.getTag(),
-                        article.getTitle(),
-                        article.getImage(),
-                        article.getCreatedAt()))
-                .collect(Collectors.toList());
-    }
-
-    //기사 더 보기
-    public List<ArticleResponseDto> getMoreArticles(String tag, Long lastPostId, int size) {
-        Pageable pageable = PageRequest.of(0, size);
 
         Page<Article> articlesPage;
 
         if (tag != null && !tag.isEmpty()) {
-            // 태그별 조회
-            articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastPostId, pageable);
+            if (lastPostId != null) {
+                // 태그별 조회
+                articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastPostId, pageable);
+            } else {
+                //태그별 조회
+                articlesPage = articleRepository.findByTag(tag, pageable);
+            }
         } else {
-            // 전체 조회
-            articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastPostId, pageable);
+            if (lastPostId != null) {
+                // 전체 조회
+                articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastPostId, pageable);
+            } else {
+                //전체 조회
+                articlesPage = articleRepository.findAll(pageable);
+            }
         }
 
-        List<Article> articles = articlesPage.getContent();
-        return articles.stream()
+        return articlesPage.stream()
                 .map(article -> new ArticleResponseDto(article.getTag(),
                         article.getTitle(),
                         article.getImage(),

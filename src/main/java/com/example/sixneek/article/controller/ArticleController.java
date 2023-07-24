@@ -17,18 +17,13 @@ public class ArticleController {
 
     @GetMapping
     public ApiResponseDto<List<ArticleResponseDto>> getArticles(@RequestParam(value = "tag", required = false) String tag,
-                                                                @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                @RequestParam(value = "size", defaultValue = "12") int size) {
-        List<ArticleResponseDto> articles = articleService.getArticles(tag, page, size);
+                                                                @RequestParam(value = "page", required = false) Integer page,
+                                                                @RequestParam(value = "size", defaultValue = "12") Integer size,
+                                                                @RequestParam(value = "lastPostId", required = false) Long lastArticleId) {
+        List<ArticleResponseDto> articles = articleService.getArticles(tag, page, size, lastArticleId);
         return new ApiResponseDto<>(HttpStatus.OK, "기사 조회 성공", articles);
     }
-    @GetMapping()
-    public ApiResponseDto<List<ArticleResponseDto>> getMoreArticles(@RequestParam(value = "tag", required = false) String tag,
-                                                                    @RequestParam Long lastArticleId,
-                                                                    @RequestParam int size) {
-        List<ArticleResponseDto> articles = articleService.getMoreArticles(tag, lastArticleId, size);
-        return new ApiResponseDto<>(HttpStatus.OK, "기사 더보기 성공", articles);
-    }
+
     @GetMapping("/{id}")
     public ApiResponseDto<ArticleResponseDto> getArticleDetail(@PathVariable Long id) {
         ArticleResponseDto responseDto = articleService.getArticleById(id);
