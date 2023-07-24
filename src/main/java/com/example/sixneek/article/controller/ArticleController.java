@@ -23,9 +23,9 @@ public class ArticleController {
         return new ApiResponseDto<>(HttpStatus.OK, "기사 조회 성공", articles);
     }
     @GetMapping()
-    public ApiResponseDto<List<ArticleResponseDto>> getMoreArticlesInTag(@RequestParam(value = "tag", required = false) String tag,
-                                                                         @RequestParam Long lastArticleId,
-                                                                         @RequestParam int size) {
+    public ApiResponseDto<List<ArticleResponseDto>> getMoreArticles(@RequestParam(value = "tag", required = false) String tag,
+                                                                    @RequestParam Long lastArticleId,
+                                                                    @RequestParam int size) {
         List<ArticleResponseDto> articles = articleService.getMoreArticles(tag, lastArticleId, size);
         return new ApiResponseDto<>(HttpStatus.OK, "기사 더보기 성공", articles);
     }

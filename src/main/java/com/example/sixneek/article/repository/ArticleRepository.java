@@ -13,7 +13,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findAll(Pageable pageable);
     Page<Article> findByTag(String tag, Pageable pageable);
 
-    Page<Article> findByIdLessThanOrderByIdDesc(Long lastPostId, Pageable pageable);
+    Page<Article> findByIdLessThanOrderByIdDesc(Long lastArticleId, Pageable pageable);
     Page<Article> findByTagAndIdLessThanOrderByIdDesc(String tag, Long lastArticleId, Pageable pageable);
 
     Optional<Article> findArticleById(Long id);

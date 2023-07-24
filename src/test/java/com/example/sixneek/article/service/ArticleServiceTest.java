@@ -48,7 +48,7 @@ public class ArticleServiceTest {
         when(article.getImage()).thenReturn("image1");
         when(article.getCreatedAt()).thenReturn(now);
         when(article.getContent()).thenReturn("content1");
-        when(article.getLikesCount()).thenReturn(10L);
+        when(article.getLikeCount()).thenReturn(10L);
 
         Page<Article> page = new PageImpl<>(Arrays.asList(article));
 
@@ -75,7 +75,7 @@ public class ArticleServiceTest {
         when(article1.getImage()).thenReturn("image1");
         when(article1.getCreatedAt()).thenReturn(now);
         when(article1.getContent()).thenReturn("content1");
-        when(article1.getLikesCount()).thenReturn(10L);
+        when(article1.getLikeCount()).thenReturn(10L);
 
         when(article2.getId()).thenReturn(2L);
         when(article2.getTag()).thenReturn("tag2");
@@ -83,7 +83,7 @@ public class ArticleServiceTest {
         when(article2.getImage()).thenReturn("image2");
         when(article2.getCreatedAt()).thenReturn(now.plusDays(1));
         when(article2.getContent()).thenReturn("content2");
-        when(article2.getLikesCount()).thenReturn(20L);
+        when(article2.getLikeCount()).thenReturn(20L);
 
         Page<Article> page = new PageImpl<>(Arrays.asList(article1, article2));
 
@@ -111,7 +111,7 @@ public class ArticleServiceTest {
         when(article.getImage()).thenReturn("image1");
         when(article.getCreatedAt()).thenReturn(now);
         when(article.getContent()).thenReturn("content1");
-        when(article.getLikesCount()).thenReturn(10L);
+        when(article.getLikeCount()).thenReturn(10L);
 
         when(articleRepository.findArticleById(anyLong())).thenReturn(Optional.of(article));
 

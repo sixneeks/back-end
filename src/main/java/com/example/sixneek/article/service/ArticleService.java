@@ -19,11 +19,13 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
 
+    //하나로 합쳐보기
+
     //기사 조회
     public List<ArticleResponseDto> getArticles(String tag, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Article> articlesPage;
-
+        // null주의
         if (tag != null) {
             //태그별 조회
             articlesPage = articleRepository.findByTag(tag, pageable);
