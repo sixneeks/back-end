@@ -16,6 +16,7 @@ public class ArticleResponseDto {
     private String title;
     private String date;
     private String tagName;
+    private String content;
     private int likeCnt;
     private boolean likeCheck;
 
@@ -25,6 +26,7 @@ public class ArticleResponseDto {
         this.title = article.getTitle();
         this.date = article.getDate();
         this.tagName = article.getTagName();
+        this.content = article.getContent();
         this.likeCnt = article.getLikeList().size();
     }
 
@@ -35,6 +37,7 @@ public class ArticleResponseDto {
         this.date = article.getDate();
         this.tagName = article.getTagName();
         this.title = article.getTitle();
+        this.content = article.getContent();
         this.likeCnt = article.getLikeList().size();
         this.likeCheck = likeCheck;
     }

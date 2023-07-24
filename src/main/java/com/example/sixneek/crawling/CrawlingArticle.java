@@ -37,7 +37,7 @@ public class CrawlingArticle {
     // Url 처리하기
     private List<ArticleListResponseDto> processUrl(String url) throws IOException {
         Document document = Jsoup.connect(url).get();
-        Elements contents = document.select("div div.section-list-area div.list");
+        Elements contentList = document.select("div div.section-list-area div.list");
 
         List<ArticleListResponseDto> articleResponseDtoList = new ArrayList<>();
 
@@ -48,11 +48,12 @@ public class CrawlingArticle {
             currentId = 16L;
         }
 
-        for (Element content : contents) {
-            String image = content.select("a img").attr("abs:src");
-            String title = content.select("h4 a").text();
-            String date = content.select("p span").text().substring(0, 10).replaceAll("-", "/");
-            String tagName = content.select("strong a").text();
+        for (Element contents : contentList) {
+            String image = contents.select("a img").attr("abs:src");
+            String title = contents.select("h4 a").text();
+            String date = contents.select("p span").text().substring(0, 10).replaceAll("-", "/");
+            String tagName = contents.select("strong a").text();
+            String content = contents.select("p a").text();
 
             Article article = new Article();
             article.setId(currentId);
@@ -60,6 +61,7 @@ public class CrawlingArticle {
             article.setTitle(title);
             article.setDate(date);
             article.setTagName(tagName);
+            article.setContent(content);
 
             articleResponseDtoList.add(new ArticleListResponseDto(article));
             articleRepository.save(article);
@@ -71,7 +73,7 @@ public class CrawlingArticle {
     }
 
     // 섹터별 기사 조회
-    public List<ArticleListResponseDto> saveArticle(String tagName) {
+    public List<ArticleListResponseDto> getTagName(String tagName) {
         List<Article> articleList = articleRepository.findAll();
 
         List<ArticleListResponseDto> articleResponseDtoList = new ArrayList<>();

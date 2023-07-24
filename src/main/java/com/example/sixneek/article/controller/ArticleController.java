@@ -28,7 +28,7 @@ public class ArticleController {
     // 섹터별 기사 조회
     @GetMapping("/api/articles/tags/{tagName}")
     public ApiResponseDto saveArticle(@PathVariable String tagName) {
-        return new ApiResponseDto(200, "OK", crawlingArticle.saveArticle(tagName));
+        return new ApiResponseDto(200, "OK", crawlingArticle.getTagName(tagName));
     }
 
     // 검색 기능
