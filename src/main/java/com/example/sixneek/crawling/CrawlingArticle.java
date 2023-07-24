@@ -89,8 +89,8 @@ public class CrawlingArticle {
 
     // 검색 기능
     public List<ArticleListResponseDto> searchKeyword(String keyword) {
-        List<Article> articleList = articleRepository.findByTitleContaining(keyword);     // title 에서만 검색
-//        List<Article> articleList = articleRepository.findByTitleContainingOrContentContaining(keyword);       // title & content 에서 검색
+//        List<Article> articleList = articleRepository.findByTitleContaining(keyword);     // title 에서만 검색
+        List<Article> articleList = articleRepository.findByTitleContainingOrContentContaining(keyword, keyword);       // title & content 에서 검색
 
         List<ArticleListResponseDto> articleResponseDtoList = new ArrayList<>();
 
