@@ -22,29 +22,28 @@ public class ArticleService {
     //하나로 합쳐보기
 
     //기사 조회
-    public List<ArticleResponseDto> getArticles(String tag, Integer page, Integer size, Long lastPostId) {
-        Pageable pageable;
+    public List<ArticleResponseDto> getArticles(String tag, Integer page, Integer size, Long lastArticleId) {
 
-        if (lastPostId != null && page == null) {
+        Pageable pageable;
+        if (lastArticleId != null && page == null) {
             pageable = PageRequest.of(0, size);
         } else {
             pageable = PageRequest.of(page, size);
         }
 
         Page<Article> articlesPage;
-
         if (tag != null && !tag.isEmpty()) {
-            if (lastPostId != null) {
+            if (lastArticleId != null) {
                 // 태그별 조회
-                articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastPostId, pageable);
+                articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastArticleId, pageable);
             } else {
                 //태그별 조회
                 articlesPage = articleRepository.findByTag(tag, pageable);
             }
         } else {
-            if (lastPostId != null) {
+            if (lastArticleId != null) {
                 // 전체 조회
-                articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastPostId, pageable);
+                articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastArticleId, pageable);
             } else {
                 //전체 조회
                 articlesPage = articleRepository.findAll(pageable);
