@@ -1,28 +1,30 @@
 package com.example.sixneek.like.entity;
 
-
-
+import com.example.sixneek.article.entity.Article;
+import com.example.sixneek.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.boot.autoconfigure.web.WebProperties;
-import org.springframework.data.annotation.Id;
+import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
-@Table(name = "Like")
-@AllArgsConstructor
-public class Like {
+@Getter
+@NoArgsConstructor
+public class ArticleLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
+
+    public ArticleLike(Article article, User user) {
+        this.article = article;
+        this.user = user;
+    }
 }
