@@ -1,32 +1,34 @@
 package com.example.sixneek.article.entity;
 
-import com.example.sixneek.like.entity.ArticleLike;
-import com.example.sixneek.user.User;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import java.util.ArrayList;
-import java.util.List;
-@Entity
+@Slf4j
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
+@NoArgsConstructor()
+@Entity
 public class Article {
-    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String image;
+    private String tag;
     private String title;
-    private String date;
-    private String tagName;
     private String content;
+    private String image;
+    private String likeCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private List<ArticleLike> likeList = new ArrayList<>();
+    @Builder
+    private Article(String tag, String title, String content, String image, String likeCount) {
+        this.tag = tag;
+        this.title = title;
+        this.content = content;
+        this.image = image;
+        this.likeCount = likeCount;
+    }
 }
