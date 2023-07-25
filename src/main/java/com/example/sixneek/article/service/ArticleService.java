@@ -3,6 +3,7 @@ package com.example.sixneek.article.service;
 import com.example.sixneek.article.dto.ArticleResponseDto;
 import com.example.sixneek.article.entity.Article;
 import com.example.sixneek.article.repository.ArticleRepository;
+import com.example.sixneek.global.exception.ArticleNotFoundException;
 import com.example.sixneek.like.service.LikeService;
 import com.example.sixneek.member.entity.Member;
 import com.example.sixneek.security.UserDetailsImpl;
@@ -55,7 +56,7 @@ public class ArticleService {
     // 기사 상세조회
     public ArticleResponseDto getArticle(Long articleId, Optional<UserDetailsImpl> userDetails) {
         Article article = articleRepository.findById(articleId).orElseThrow (
-                () -> new RuntimeException("기사가 존재하지 않습니다.")
+                () -> new ArticleNotFoundException("기사가 존재하지 않습니다.")
         );
 
         boolean checkLike = false;
