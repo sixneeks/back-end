@@ -1,19 +1,19 @@
 package com.example.sixneek.like.entity;
 
 
+
 import com.example.sixneek.article.entity.Article;
 import com.example.sixneek.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "Likes")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "Like")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
