@@ -1,44 +1,38 @@
 package com.example.sixneek.article.dto;
 
 import com.example.sixneek.article.entity.Article;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Builder
+
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ArticleResponseDto {
     private Long id;
     private String image;
     private String title;
     private String date;
-    private String tagName;
+    private String tag;
     private String content;
-    private int likeCnt;
+    private int likesCount;
     private boolean likeCheck;
-
-    public ArticleResponseDto(Article article) {
-        this.id = article.getId();
-        this.image = article.getImage();
-        this.title = article.getTitle();
-        this.date = article.getDate();
-        this.tagName = article.getTagName();
-        this.content = article.getContent();
-        this.likeCnt = article.getLikeList().size();
-    }
 
     public ArticleResponseDto(Article article, boolean likeCheck) {
         this.id = article.getId();
+        this.tag = article.getTag();
+        this.title = article.getTitle();
         this.image = article.getImage();
-        this.title = article.getTitle();
-        this.date = article.getDate();
-        this.tagName = article.getTagName();
-        this.title = article.getTitle();
+        this.date =  article.getDate();
         this.content = article.getContent();
-        this.likeCnt = article.getLikeList().size();
+        this.likesCount = article.getLikeList().size();
         this.likeCheck = likeCheck;
+    }
+
+    public ArticleResponseDto(Long id, String tag, String title, String image, String date) {
+        this.id = id;
+        this.tag = tag;
+        this.title = title;
+        this.image = image;
+        this.date = date;
     }
 }

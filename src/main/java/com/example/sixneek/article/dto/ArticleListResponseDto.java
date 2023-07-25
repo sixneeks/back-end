@@ -15,14 +15,13 @@ public class ArticleListResponseDto {
     private String image;
     private String title;
     private String date;
-    private String tagName;
+    private String tag;
 
     public ArticleListResponseDto(Article article) {
         this.id = article.getId();
         this.image = article.getImage();
         this.title = article.getTitle();
         this.date = article.getDate();
-        this.tagName = article.getTagName();
-        this.title = article.getTitle();
+        this.tag = article.getTag();
     }
 }

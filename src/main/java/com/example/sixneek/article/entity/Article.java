@@ -1,33 +1,32 @@
 package com.example.sixneek.article.entity;
 
-import com.example.sixneek.like.entity.ArticleLike;
-import com.example.sixneek.user.User;
+
+import com.example.sixneek.like.entity.Like;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-@Entity
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
+@Entity
 public class Article {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String image;
     private String title;
     private String date;
-    private String tagName;
     @Column(length = 5000)
     private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String tag;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private List<ArticleLike> likeList = new ArrayList<>();
+    private List<Like> likeList = new ArrayList<>();
 }

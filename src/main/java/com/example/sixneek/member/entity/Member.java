@@ -1,11 +1,11 @@
 package com.example.sixneek.member.entity;
 
+import com.example.sixneek.like.entity.Like;
 import com.example.sixneek.readed.entity.Readed;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
     @Email
@@ -59,5 +59,11 @@ public class Member {
         this.emoji = emoji;
         this.interests = interests;
         this.job = job;
+    }
+
+    public Member(String email, String password, String nickname) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
     }
 }
