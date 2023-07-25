@@ -42,6 +42,7 @@ public class MemberService {
 
     public ApiResponseDto<?> withdraw(Member member) {
         memberRepository.delete(member);
+        redisRepository.deleteById(member.getEmail());
 
         return ApiResponseDto.builder()
                 .status(HttpStatus.OK)
