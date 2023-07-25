@@ -3,7 +3,7 @@ package com.example.sixneek.article.service;
 import com.example.sixneek.article.dto.ArticleResponseDto;
 import com.example.sixneek.article.entity.Article;
 import com.example.sixneek.article.repository.ArticleRepository;
-import com.example.sixneek.global.dto.exception.ArticleNotFoundException;
+import com.example.sixneek.global.exception.ArticleNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

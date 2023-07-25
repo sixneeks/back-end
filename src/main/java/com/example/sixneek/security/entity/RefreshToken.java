@@ -9,11 +9,12 @@ import org.springframework.data.redis.core.index.Indexed;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "refresh", timeToLive = 10)
+@RedisHash(value = "refresh", timeToLive = 2 * 60)
 public class RefreshToken {
     @Id
-    private String id; // email
-
-    @Indexed
+    private String id; // email값을 id로 사용
+    @Indexed // 해당 필드 값으로 데이터를 찾아올 수 있다
+    private String accessToken;
     private String refreshToken;
+
 }

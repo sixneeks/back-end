@@ -1,10 +1,11 @@
 package com.example.sixneek.security.config;
 
+import com.example.sixneek.security.UserDetailsServiceImpl;
+import com.example.sixneek.security.jwt.ExceptionHandlerFilter;
 import com.example.sixneek.security.jwt.JwtAuthenticationFilter;
 import com.example.sixneek.security.jwt.JwtAuthorizationFilter;
-import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
-import com.example.sixneek.security.UserDetailsServiceImpl;
 import com.example.sixneek.security.jwt.JwtUtil;
+import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final RefreshTokenRedisRepository redisRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,14 +42,14 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, refreshTokenRedisRepository);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, redisRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, redisRepository);
     }
 
     @Bean
@@ -71,9 +72,9 @@ public class WebSecurityConfig {
         );
 
         // 필터 관리
+        http.addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }
