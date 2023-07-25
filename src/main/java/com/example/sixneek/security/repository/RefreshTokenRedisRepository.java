@@ -3,7 +3,8 @@ package com.example.sixneek.security.repository;
 import com.example.sixneek.security.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
-public interface RefreshTokenRedisRepository extends CrudRepository<RefreshToken, Long> {
+import java.util.Optional;
 
-    RefreshToken findByRefreshToken(String refreshToken);
+public interface RefreshTokenRedisRepository extends CrudRepository<RefreshToken, String> {
+    Optional<RefreshToken> findByAccessToken(String accessToken);
 }

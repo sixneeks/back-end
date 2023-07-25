@@ -20,11 +20,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
-    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final RefreshTokenRedisRepository redisRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRedisRepository repository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRedisRepository redisRepository) {
         this.jwtUtil = jwtUtil;
-        this.refreshTokenRedisRepository = repository;
+        this.redisRepository = redisRepository;
         setFilterProcessesUrl("/api/members/login");
     }
 
@@ -52,16 +52,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 토큰 발급
         String accessToken = jwtUtil.createAccessToken(email);
-        String refreshToken = jwtUtil.createRefreshToken(email);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-        response.addHeader(JwtUtil.REFRESH_HEADER, refreshToken);
+        String refreshToken = jwtUtil.createRefreshToken();
 
-        // redis에 refresh 토큰 저장
+        // access 토큰은 응답 헤더에 추가
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.BEARER_PREFIX + accessToken);
+
+        // refresh 토큰은 redis에 저장
         RefreshToken refresh = RefreshToken.builder()
-                .id(authResult.getName())
+                .id(email)
+                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-        refreshTokenRedisRepository.save(refresh);
+        redisRepository.save(refresh);
 
         response.setStatus(200);
         response.setContentType("application/json");
@@ -76,7 +78,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(200);
+        response.setStatus(401);
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         ApiResponseDto<?> responseDto = ApiResponseDto.builder()

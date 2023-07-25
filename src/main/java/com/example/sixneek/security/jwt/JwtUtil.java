@@ -17,18 +17,11 @@ import java.util.Date;
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String REFRESH_HEADER = "Refresh";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L; // 30분
-    private final long REFRESH_TOKEN_EXPIRE_TIME = 14 * 24 * 60 * 60 * 1000L; // 2주
-
-    public static enum JwtCode{
-        DENIED,
-        ACCESS,
-        EXPIRED;
-    }
+    private final long ACCESS_TOKEN_EXPIRE_TIME = 10 * 1000L; // 30 * 60 * 1000L; // 30분
+    private final long REFRESH_TOKEN_EXPIRE_TIME =  2 * 60 * 1000L; // 14 * 24 * 60 * 60 * 1000L; // 2주
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -45,7 +38,7 @@ public class JwtUtil {
     public String createAccessToken(String username) {
         Date date = new Date();
 
-        return BEARER_PREFIX + Jwts.builder()
+        return Jwts.builder()
                 .setSubject(username) // 사용자 식별자값(ID)
                 .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME)) // 만료 시간
                 .setIssuedAt(date) // 발급일
@@ -54,11 +47,10 @@ public class JwtUtil {
     }
 
     // Refresh Token 생성
-    public String createRefreshToken(String username) {
+    public String createRefreshToken() {
         Date date = new Date();
 
-        return BEARER_PREFIX + Jwts.builder()
-                .setSubject(username) // 사용자 식별자값(ID)
+        return Jwts.builder()
                 .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_EXPIRE_TIME)) // 만료 시간
                 .setIssuedAt(date) // 발급일
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -70,8 +62,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        log.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
+        return null;
     }
 
     // 토큰 검증
@@ -99,5 +90,11 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public enum JwtCode {
+        DENIED,
+        ACCESS,
+        EXPIRED
     }
 }

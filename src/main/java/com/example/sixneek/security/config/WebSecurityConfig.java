@@ -27,7 +27,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final RefreshTokenRedisRepository redisRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,14 +41,14 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, refreshTokenRedisRepository);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, redisRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, redisRepository);
     }
 
     @Bean

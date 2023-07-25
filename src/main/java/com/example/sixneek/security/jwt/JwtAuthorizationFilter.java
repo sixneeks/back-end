@@ -1,6 +1,8 @@
 package com.example.sixneek.security.jwt;
 
 import com.example.sixneek.security.UserDetailsServiceImpl;
+import com.example.sixneek.security.entity.RefreshToken;
+import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,13 +20,14 @@ import java.io.IOException;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final RefreshTokenRedisRepository redisRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, RefreshTokenRedisRepository redisRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.redisRepository = redisRepository;
     }
 
     @Override
@@ -34,46 +37,47 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken)) { // access 토큰이 있으면
             switch (jwtUtil.validateToken(accessToken)) { // 검증
-                case DENIED -> {
-                    throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
-                }
+                case DENIED -> throw new IllegalArgumentException("유효하지 않은 access 토큰입니다.");
 
                 case EXPIRED -> {
-                    bearerToken = request.getHeader(JwtUtil.REFRESH_HEADER);
-                    String refreshToken = jwtUtil.substringToken(bearerToken);
-                    if (StringUtils.hasText(refreshToken)) {
-                        JwtUtil.JwtCode jwtCode = jwtUtil.validateToken(refreshToken);
-                        switch (jwtCode) {
-                            case EXPIRED, DENIED -> {
-                                String pre = (jwtCode == JwtUtil.JwtCode.DENIED) ? "유효하지 않은" : "만료된";
-                                throw new IllegalArgumentException(pre + " 토큰 입니다.");
-                            }
-                            case ACCESS -> {
-                                String email = jwtUtil.getUserInfoFromToken(refreshToken); // 토큰 정보 추출
-                                try {
-                                    setAuthentication(email); // 사용자 정보 저장
-                                } catch (Exception e) {
-                                    log.error(e.getMessage());
-                                    return;
-                                }
-
-                                // access 재발급
-                                accessToken = jwtUtil.createAccessToken(email);
-                                response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-                                return;
-                            }
+                    // refresh 토큰 찾기
+                    RefreshToken refreshToken = redisRepository.findByAccessToken(accessToken)
+                            .orElseThrow(() -> new NullPointerException("해당 access 토큰에 대한 refresh 토큰이 존재하지 않습니다.")); // refresh 토큰이 만료된 경우 재로그인 요청
+                    if (jwtUtil.validateToken(refreshToken.getRefreshToken()) == JwtUtil.JwtCode.ACCESS) { // refresh 토큰이 유효하다면
+                        try {
+                            setAuthentication(refreshToken.getId()); // email 저장
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                            return;
                         }
+
+                        // access 토큰 재발급
+                        log.info("access 토큰 재발급");
+                        accessToken = jwtUtil.createAccessToken(refreshToken.getId());
+                        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, JwtUtil.BEARER_PREFIX + accessToken);
+
+                        // 재발급한 access 토큰 업데이트
+                        refreshToken = RefreshToken.builder()
+                                .id(refreshToken.getId())
+                                .accessToken(accessToken)
+                                .refreshToken(refreshToken.getRefreshToken())
+                                .build();
+                        redisRepository.save(refreshToken);
+                    }
+                    // TODO: 글로벌 예외 처리로 변경하기
+                    response.setStatus(400);
+                    return;
+                }
+
+                case ACCESS -> {
+                    String email = jwtUtil.getUserInfoFromToken(accessToken); // 토큰 정보 추출
+                    try {
+                        setAuthentication(email); // 사용자 정보 저장
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                        return;
                     }
                 }
-            }
-
-            // 유효한 경우
-            String email = jwtUtil.getUserInfoFromToken(accessToken); // 토큰 정보 추출
-            try {
-                setAuthentication(email); // 사용자 정보 저장
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
             }
         }
 
