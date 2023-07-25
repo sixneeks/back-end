@@ -25,19 +25,19 @@ public class ArticleService {
 
     // 기사 조회
     public List<ArticleResponseDto> getArticles(String tag,Integer size, Long lastArticleId) {
-
+        int pageCount = (lastArticleId != null) ? lastArticleId.intValue() : 1;
         Pageable pageable = PageRequest.of(0, size);
 
         Page<Article> articlesPage = null;
         if (tag != null && !tag.isEmpty()) {
             if (lastArticleId != null) {
                 //태그별 기사 더 보기 조회
-                articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastArticleId, pageable);
+                articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastArticleId*pageCount*size, pageable);
             }
         } else {
             if (lastArticleId != null) {
                 //전체 기사 더 보기 조회
-                articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastArticleId, pageable);
+                articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastArticleId*pageCount*size, pageable);
             }
         }
 
