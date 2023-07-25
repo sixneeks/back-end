@@ -3,9 +3,10 @@ package com.example.sixneek.member.controller;
 import com.example.sixneek.global.dto.ApiResponseDto;
 import com.example.sixneek.member.dto.SignupRequestDto;
 import com.example.sixneek.member.service.MemberService;
-import com.example.sixneek.security.jwt.JwtUtil;
+import com.example.sixneek.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")
     public ApiResponseDto<?> signup(@Valid @RequestBody SignupRequestDto requestDto) {
@@ -22,8 +22,17 @@ public class MemberController {
     }
 
     @GetMapping("/test")
-    public String test(@RequestHeader(JwtUtil.AUTHORIZATION_HEADER) String token) {
-        String accessToken = jwtUtil.substringToken(token);
-        return jwtUtil.getUserInfoFromToken(accessToken);
+    public String test(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userDetails.getMember().getEmail();
+    }
+
+    @DeleteMapping("/signout")
+    public ApiResponseDto<?> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.withdraw(userDetails.getMember());
+    }
+
+    @DeleteMapping("/logout")
+    public ApiResponseDto<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.logout(userDetails.getMember());
     }
 }

@@ -4,6 +4,7 @@ import com.example.sixneek.global.dto.ApiResponseDto;
 import com.example.sixneek.member.dto.SignupRequestDto;
 import com.example.sixneek.member.entity.Member;
 import com.example.sixneek.member.repository.MemberRepository;
+import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenRedisRepository redisRepository;
 
     public ApiResponseDto<?> signup(SignupRequestDto requestDto) {
         String email = requestDto.getEmail();
@@ -35,6 +37,24 @@ public class MemberService {
         return ApiResponseDto.builder()
                 .status(HttpStatus.CREATED)
                 .message("회원가입 성공")
+                .build();
+    }
+
+    public ApiResponseDto<?> withdraw(Member member) {
+        memberRepository.delete(member);
+
+        return ApiResponseDto.builder()
+                .status(HttpStatus.OK)
+                .message("회원탈퇴 성공")
+                .build();
+    }
+
+    public ApiResponseDto<?> logout(Member member) {
+        redisRepository.deleteById(member.getEmail());
+
+        return ApiResponseDto.builder()
+                .status(HttpStatus.OK)
+                .message("로그아웃 성공")
                 .build();
     }
 }
