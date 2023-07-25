@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ApiResponseDto<T> {
-
     private HttpStatus status;
     private String message;
     private T data;

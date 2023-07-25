@@ -39,7 +39,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken)) { // access 토큰이 있으면
             switch (jwtUtil.validateToken(accessToken)) { // 검증
-                case DENIED -> throw new CustomException("유효하지 않은 access 토큰입니다.");
+                case DENIED -> throw new CustomException(HttpStatus.UNAUTHORIZED, "유효하지 않은 access 토큰입니다.");
 
                 case EXPIRED -> {
                     // refresh 토큰 찾기

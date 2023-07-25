@@ -4,18 +4,13 @@ import com.example.sixneek.article.entity.Article;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-
-    Page<Article> findAll(Pageable pageable);
-    Page<Article> findByTag(String tag, Pageable pageable);
+    List<Article> findByTitleContainingOrContentContaining(String title, String content);       // title & content 에서 검색
 
     Page<Article> findByIdLessThanOrderByIdDesc(Long lastArticleId, Pageable pageable);
     Page<Article> findByTagAndIdLessThanOrderByIdDesc(String tag, Long lastArticleId, Pageable pageable);
-
-    Optional<Article> findArticleById(Long id);
 }

@@ -1,36 +1,32 @@
 package com.example.sixneek.article.entity;
 
-import com.example.sixneek.time.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import com.example.sixneek.like.entity.Like;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 
-@Slf4j
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class Article extends BaseTimeEntity {
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String tag;
-    private String title;
-    private String content;
     private String image;
-    private Long likeCount;
+    private String title;
+    private String date;
+    @Column(length = 5000)
+    private String content;
+    private String tag;
 
-    @Builder
-    private Article(String tag, String title, String content, String image, Long likeCount) {
-        this.tag = tag;
-        this.title = title;
-        this.content = content;
-        this.image = image;
-        this.likeCount = likeCount;
-    }
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<Like> likeList = new ArrayList<>();
 }
