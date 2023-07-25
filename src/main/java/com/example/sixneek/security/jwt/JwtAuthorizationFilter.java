@@ -1,5 +1,6 @@
 package com.example.sixneek.security.jwt;
 
+import com.example.sixneek.global.exception.CustomException;
 import com.example.sixneek.security.UserDetailsServiceImpl;
 import com.example.sixneek.security.entity.RefreshToken;
 import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
@@ -8,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -37,12 +39,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken)) { // access 토큰이 있으면
             switch (jwtUtil.validateToken(accessToken)) { // 검증
-                case DENIED -> throw new IllegalArgumentException("유효하지 않은 access 토큰입니다.");
+                case DENIED -> throw new CustomException("유효하지 않은 access 토큰입니다.");
 
                 case EXPIRED -> {
                     // refresh 토큰 찾기
                     RefreshToken refreshToken = redisRepository.findByAccessToken(accessToken)
-                            .orElseThrow(() -> new NullPointerException("해당 access 토큰에 대한 refresh 토큰이 존재하지 않습니다.")); // refresh 토큰이 만료된 경우 재로그인 요청
+                            .orElseThrow(() -> new CustomException(HttpStatus.UNAUTHORIZED, "만료된 access 토큰에 대한 refresh 토큰이 만료되었습니다."));
                     if (jwtUtil.validateToken(refreshToken.getRefreshToken()) == JwtUtil.JwtCode.ACCESS) { // refresh 토큰이 유효하다면
                         try {
                             setAuthentication(refreshToken.getId()); // email 저장
@@ -64,7 +66,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                                 .build();
                         redisRepository.save(refreshToken);
                     }
-                    // TODO: 글로벌 예외 처리로 변경하기
                     response.setStatus(400);
                     return;
                 }
@@ -98,4 +99,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
 }

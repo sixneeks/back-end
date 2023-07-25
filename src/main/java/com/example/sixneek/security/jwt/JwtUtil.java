@@ -2,6 +2,7 @@ package com.example.sixneek.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,7 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
     private final long ACCESS_TOKEN_EXPIRE_TIME = 10 * 1000L; // 30 * 60 * 1000L; // 30분
-    private final long REFRESH_TOKEN_EXPIRE_TIME =  2 * 60 * 1000L; // 14 * 24 * 60 * 60 * 1000L; // 2주
+    private final long REFRESH_TOKEN_EXPIRE_TIME =  60 * 1000L; // 14 * 24 * 60 * 60 * 1000L; // 2주
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -70,7 +71,7 @@ public class JwtUtil {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return JwtCode.ACCESS;
-        } catch (SecurityException | MalformedJwtException e) {
+        } catch (SignatureException | MalformedJwtException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token, 만료된 JWT token 입니다.");

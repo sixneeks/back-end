@@ -26,9 +26,4 @@ public class MemberController {
         String accessToken = jwtUtil.substringToken(token);
         return jwtUtil.getUserInfoFromToken(accessToken);
     }
-
-    @GetMapping("/test2")
-    public String test() {
-        return "test";
-    }
 }

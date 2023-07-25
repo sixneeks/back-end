@@ -1,6 +1,7 @@
 package com.example.sixneek.security.config;
 
 import com.example.sixneek.security.UserDetailsServiceImpl;
+import com.example.sixneek.security.jwt.ExceptionHandlerFilter;
 import com.example.sixneek.security.jwt.JwtAuthenticationFilter;
 import com.example.sixneek.security.jwt.JwtAuthorizationFilter;
 import com.example.sixneek.security.jwt.JwtUtil;
@@ -71,9 +72,9 @@ public class WebSecurityConfig {
         );
 
         // 필터 관리
+        http.addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }
