@@ -27,6 +27,7 @@ public class Article {
     private String content;
     private String tag;
 
+    @Builder.Default
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Like> likeList = new ArrayList<>();
 }
