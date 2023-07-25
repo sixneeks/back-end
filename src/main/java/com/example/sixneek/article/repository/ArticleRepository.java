@@ -6,11 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByTitleContainingOrContentContaining(String title, String content);       // title & content 에서 검색
 
-    Page<Article> findByIdLessThanOrderByIdDesc(Long lastArticleId, Pageable pageable);
-    Page<Article> findByTagAndIdLessThanOrderByIdDesc(String tag, Long lastArticleId, Pageable pageable);
+    Page<Article> findByTagOrderByIdDesc(String tag, Pageable pageable);
+
+    Page<Article> findByOrderByIdDesc(Pageable pageable);
 }
