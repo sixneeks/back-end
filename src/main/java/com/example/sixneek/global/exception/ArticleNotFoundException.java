@@ -1,4 +1,4 @@
-package com.example.sixneek.global.dto.exception;
+package com.example.sixneek.global.exception;
 
 public class ArticleNotFoundException extends RuntimeException {
     public ArticleNotFoundException(String message) {

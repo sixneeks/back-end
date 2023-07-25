@@ -1,10 +1,10 @@
 package com.example.sixneek.security.config;
 
+import com.example.sixneek.security.UserDetailsServiceImpl;
 import com.example.sixneek.security.jwt.JwtAuthenticationFilter;
 import com.example.sixneek.security.jwt.JwtAuthorizationFilter;
-import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
-import com.example.sixneek.security.UserDetailsServiceImpl;
 import com.example.sixneek.security.jwt.JwtUtil;
+import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

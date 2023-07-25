@@ -1,10 +1,11 @@
 package com.example.sixneek.member.service;
 
-import com.example.sixneek.ApiResponseDto;
+import com.example.sixneek.global.dto.ApiResponseDto;
 import com.example.sixneek.member.dto.SignupRequestDto;
 import com.example.sixneek.member.entity.Member;
 import com.example.sixneek.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class MemberService {
         memberRepository.save(member);
 
         return ApiResponseDto.builder()
-                .status(201)
+                .status(HttpStatus.CREATED)
                 .message("회원가입 성공")
                 .build();
     }

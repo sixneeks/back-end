@@ -1,15 +1,16 @@
 package com.example.sixneek.security.jwt;
 
-import com.example.sixneek.ApiResponseDto;
+import com.example.sixneek.global.dto.ApiResponseDto;
 import com.example.sixneek.member.dto.LoginRequestDto;
-import com.example.sixneek.security.entity.RefreshToken;
 import com.example.sixneek.security.UserDetailsImpl;
+import com.example.sixneek.security.entity.RefreshToken;
 import com.example.sixneek.security.repository.RefreshTokenRedisRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -69,7 +70,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         ApiResponseDto<?> responseDto = ApiResponseDto.builder()
-                .status(200)
+                .status(HttpStatus.OK)
                 .message("로그인 성공")
                 .build();
         String result = new ObjectMapper().writeValueAsString(responseDto);
@@ -82,7 +83,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         ApiResponseDto<?> responseDto = ApiResponseDto.builder()
-                .status(401)
+                .status(HttpStatus.BAD_REQUEST)
                 .message("로그인 실패")
                 .build();
         String result = new ObjectMapper().writeValueAsString(responseDto);

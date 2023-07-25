@@ -1,6 +1,6 @@
 package com.example.sixneek.member.controller;
 
-import com.example.sixneek.ApiResponseDto;
+import com.example.sixneek.global.dto.ApiResponseDto;
 import com.example.sixneek.member.dto.SignupRequestDto;
 import com.example.sixneek.member.service.MemberService;
 import com.example.sixneek.security.jwt.JwtUtil;

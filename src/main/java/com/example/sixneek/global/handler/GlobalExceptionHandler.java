@@ -1,6 +1,6 @@
-package com.example.sixneek.global.dto.globalExceptionHandler;
+package com.example.sixneek.global.handler;
 
-import com.example.sixneek.global.dto.exception.ArticleNotFoundException;
+import com.example.sixneek.global.exception.ArticleNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
