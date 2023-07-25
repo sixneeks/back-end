@@ -49,11 +49,14 @@ public class CrawlingArticle {
         }
 
         for (Element contents : contentList) {
-            String image = contents.select("a img").attr("abs:src");
-            String title = contents.select("h4 a").text();
-            String date = contents.select("p span").text().substring(0, 10).replaceAll("-", "/");
-            String tagName = contents.select("strong a").text();
-            String content = contents.select("p a").text();
+            String image = contents.select("a img").attr("abs:src");        // 이미지
+            String title = contents.select("h4 a").text();      // 제목
+            String date = contents.select("p span").text().substring(0, 10).replaceAll("-", "/");       // 날짜
+            String tagName = contents.select("strong a").text();        // 섹션(태그)
+            
+            String articleLink = contents.select("h4 a").attr("abs:href");      // 내용
+            Document articleDocument = Jsoup.connect(articleLink).get();
+            String content = articleDocument.select("div div.text").text();
 
             Article article = new Article();
             article.setId(currentId);

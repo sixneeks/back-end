@@ -14,7 +14,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final LikeService likeService;
 
-    // 게시글 선택 조회 - 회원
+    // 선택 조회 - 회원
     public ArticleResponseDto getArticle(Long articleId, User user) {
         Article article = articleRepository.findById(articleId).orElseThrow (
                 () -> new RuntimeException("기사가 존재하지 않습니다.")
@@ -23,7 +23,7 @@ public class ArticleService {
         return new ArticleResponseDto(article, likeService.checkLike(article.getId(), user));
     }
 
-    // 게시글 선택 조회 - 비회원
+    // 선택 조회 - 비회원
     public ArticleResponseDto getArticle(Long articleId) {
         Article article = articleRepository.findById(articleId).orElseThrow (
                 () -> new RuntimeException("기사가 존재하지 않습니다.")

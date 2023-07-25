@@ -21,6 +21,7 @@ public class Article {
     private String title;
     private String date;
     private String tagName;
+    @Column(length = 5000)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
