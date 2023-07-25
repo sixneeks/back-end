@@ -26,7 +26,7 @@ public class MemberController {
         return userDetails.getMember().getEmail();
     }
 
-    @DeleteMapping("/signout")
+    @DeleteMapping("/withdraw")
     public ApiResponseDto<?> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memberService.withdraw(userDetails.getMember());
     }
