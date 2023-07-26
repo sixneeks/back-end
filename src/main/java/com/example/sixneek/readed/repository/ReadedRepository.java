@@ -1,4 +1,7 @@
 package com.example.sixneek.readed.repository;
 
-public interface ReadedRepository {
+import com.example.sixneek.readed.entity.Readed;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ReadedRepository extends JpaRepository<Readed, Long> {
 }
