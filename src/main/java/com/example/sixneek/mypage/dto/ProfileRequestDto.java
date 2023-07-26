@@ -1,14 +1,20 @@
 package com.example.sixneek.mypage.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProfileRequestDto {
-    private String password;
     private String nickname;
-    private Boolean isSubscribe;
+    private String birth;
+    private String gender;
+    private String emoji;
+    private String job;
+    private String interests;
+    private String password;
+//    private Boolean isSubscribe;
+
+    public void updatePassword(String encoded) {
+        this.password = encoded;
+    }
+
 }

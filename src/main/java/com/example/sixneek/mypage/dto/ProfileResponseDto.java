@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class ProfileResponseDto {
     private String email;
     private String nickname;
-    private String birthYear;
+    private String birth;
     private String gender;
     private String emoji;
     private String interests;
@@ -26,7 +26,7 @@ public class ProfileResponseDto {
     public ProfileResponseDto(Member member) {
         this.email = member.getEmail();
         this.nickname = member.getNickname();
-        this.birthYear = member.getBirthYear();
+        this.birth = member.getBirth();
         this.gender = member.getGender();
         this.emoji = member.getEmoji();
         this.interests = member.getInterests();
