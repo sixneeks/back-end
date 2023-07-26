@@ -1,8 +1,8 @@
 package com.example.sixneek.readed.controller;
 
 import com.example.sixneek.global.dto.ApiResponseDto;
-import com.example.sixneek.readed.Service.ReadedService;
 import com.example.sixneek.readed.dto.ReadedResponseDto;
+import com.example.sixneek.readed.service.ReadedService;
 import com.example.sixneek.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
