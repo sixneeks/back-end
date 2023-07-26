@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.index.Indexed;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "refresh", timeToLive = 2 * 60)
+@RedisHash(value = "refresh", timeToLive = 7 * 24 * 60 * 60)
 public class RefreshToken {
     @Id
     private String id; // email값을 id로 사용

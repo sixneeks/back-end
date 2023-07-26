@@ -38,9 +38,8 @@ public class ArticleController {
     @GetMapping
     public ApiResponseDto<List<ArticleResponseDto>> getArticles(@RequestParam(value = "tag", required = false) String tag,
                                                                 @RequestParam(value = "size", defaultValue = "12") Integer size,
-                                                                @RequestParam(value = "lastArticleId", required = false) Long lastArticleId) {
-        if (lastArticleId == null) lastArticleId = Long.MAX_VALUE;
-        List<ArticleResponseDto> articles = articleService.getArticles(tag, size, lastArticleId);
+                                                                @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        List<ArticleResponseDto> articles = articleService.getArticles(tag, size, page);
         return new ApiResponseDto<>(HttpStatus.OK, "기사 조회 성공", articles);
     }
 

@@ -10,6 +10,7 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findByTitleContainingOrContentContaining(String title, String content);       // title & content 에서 검색
 
-    Page<Article> findByIdLessThanOrderByIdDesc(Long lastArticleId, Pageable pageable);
-    Page<Article> findByTagAndIdLessThanOrderByIdDesc(String tag, Long lastArticleId, Pageable pageable);
+    Page<Article> findByTagOrderByIdDesc(String tag, Pageable pageable);
+
+    Page<Article> findByOrderByIdDesc(Pageable pageable);
 }

@@ -25,24 +25,19 @@ public class ArticleService {
     private final LikeService likeService;
 
     // 기사 조회
-    public List<ArticleResponseDto> getArticles(String tag,Integer size, Long lastArticleId) {
-
-        Pageable pageable = PageRequest.of(0, size);
+    public List<ArticleResponseDto> getArticles(String tag, Integer size, Integer page) {
+        Pageable pageable = PageRequest.of(0, size * page);
 
         Page<Article> articlesPage = null;
         if (tag != null && !tag.isEmpty()) {
-            if (lastArticleId != null) {
-                //태그별 기사 더 보기 조회
-                articlesPage = articleRepository.findByTagAndIdLessThanOrderByIdDesc(tag, lastArticleId, pageable);
-            }
+            //태그별 기사 더 보기 조회
+            articlesPage = articleRepository.findByTagOrderByIdDesc(tag, pageable);
         } else {
-            if (lastArticleId != null) {
-                //전체 기사 더 보기 조회
-                articlesPage = articleRepository.findByIdLessThanOrderByIdDesc(lastArticleId, pageable);
-            }
+            //전체 기사 더 보기 조회
+            articlesPage = articleRepository.findByOrderByIdDesc(pageable);
         }
 
-        return articlesPage.stream()
+        List<ArticleResponseDto> newArticles = articlesPage.stream()
                 .map(article -> new ArticleResponseDto(
                         article.getId(),
                         article.getTag(),
@@ -51,6 +46,8 @@ public class ArticleService {
                         article.getDate())
                 )
                 .collect(Collectors.toList());
+
+        return newArticles;
     }
 
     // 기사 상세조회

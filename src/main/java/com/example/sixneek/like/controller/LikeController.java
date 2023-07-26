@@ -18,7 +18,7 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/likes")
-    public ApiResponseDto saveLike(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return new ApiResponseDto(HttpStatus.OK, "OK", likeService.saveLike(articleId, userDetails.getMember()));
+    public ApiResponseDto<?> saveLike(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return new ApiResponseDto<>(HttpStatus.OK, "OK", likeService.saveLike(articleId, userDetails.getMember()));
     }
 }
