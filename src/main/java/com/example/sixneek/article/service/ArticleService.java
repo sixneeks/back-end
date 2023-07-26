@@ -1,5 +1,6 @@
 package com.example.sixneek.article.service;
 
+import com.example.sixneek.article.dto.ArticleRequestDto;
 import com.example.sixneek.article.dto.ArticleResponseDto;
 import com.example.sixneek.article.entity.Article;
 import com.example.sixneek.article.repository.ArticleRepository;
@@ -12,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,6 +67,27 @@ public class ArticleService {
         return new ArticleResponseDto(article, checkLike);
     }
 
+    // Scheduler : 제목으로 DB 에서 기사 검색
+    public List<ArticleRequestDto> searchArticles(String title) {
+        List<Article> articleList = articleRepository.findByTitleContaining(title);
 
+        List<ArticleRequestDto> articleRequestDtoList = new ArrayList<>();
+
+        for (Article article : articleList) {
+            articleRequestDtoList.add(new ArticleRequestDto(article));
+        }
+
+        return articleRequestDtoList;
+
+    }
+
+    // Scheduler : 기사 업데이트
+    @Transactional
+    public void updateBySearch(Long id, ArticleRequestDto articleRequestDto) {
+        Article article = articleRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("해당 기사는 존재하지 않습니다.")
+        );
+        article.updateByArticleRequestDto(articleRequestDto);
+    }
 }
 

@@ -13,4 +13,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findByTagOrderByIdDesc(String tag, Pageable pageable);
 
     Page<Article> findByOrderByIdDesc(Pageable pageable);
+
+    List<Article> findByTitleContaining(String title);
 }
