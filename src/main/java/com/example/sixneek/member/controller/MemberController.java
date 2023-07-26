@@ -21,11 +21,6 @@ public class MemberController {
         return memberService.signup(requestDto);
     }
 
-    @GetMapping("/test")
-    public String test(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userDetails.getMember().getEmail();
-    }
-
     @DeleteMapping("/withdraw")
     public ApiResponseDto<?> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memberService.withdraw(userDetails.getMember());
@@ -34,5 +29,10 @@ public class MemberController {
     @DeleteMapping("/logout")
     public ApiResponseDto<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memberService.logout(userDetails.getMember());
+    }
+
+    @GetMapping("/test")
+    public String test(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userDetails.getMember().getEmail();
     }
 }

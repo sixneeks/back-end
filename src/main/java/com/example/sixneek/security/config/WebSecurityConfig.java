@@ -95,7 +95,6 @@ public class WebSecurityConfig {
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
                         .requestMatchers("/api/members/signup").permitAll()
                         .requestMatchers("/api/members/login").permitAll()
-                        .requestMatchers("/api/members/profile/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/articles/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
