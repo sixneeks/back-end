@@ -44,22 +44,12 @@ public class Member {
     @Column
     private String job;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Readed> readedList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Like> likeList = new ArrayList<>();
 
-    public Member(String email, String password, String nickname, String birth, String gender, String emoji, String interests, String job) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.birth = birth;
-        this.gender = gender;
-        this.emoji = emoji;
-        this.interests = interests;
-        this.job = job;
-    }
 
     public Member(String email, String password, String nickname) {
         this.email = email;
