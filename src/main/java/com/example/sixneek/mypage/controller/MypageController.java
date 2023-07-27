@@ -40,4 +40,8 @@ class MypageController {
         return mypageService.updateProfile(userDetails.getMember(), tab, requestDto);
     }
 
+    @GetMapping("/readedList")
+    public ApiResponseDto<?> getReadedList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return mypageService.getReadedList(userDetails);
+    }
 }
