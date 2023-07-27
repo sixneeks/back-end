@@ -21,8 +21,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (CustomException e){
             setResponse(response, e.getStatus(), e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            setResponse(response, HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
     private void setResponse(HttpServletResponse response, HttpStatus status, String message){
