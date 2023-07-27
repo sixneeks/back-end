@@ -62,12 +62,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         refreshToken = RefreshToken.builder()
                                 .id(refreshToken.getId())
                                 .accessToken(accessToken)
-                                .refreshToken(refreshToken.getRefreshToken())
                                 .build();
                         redisRepository.save(refreshToken);
+                        throw new CustomException(HttpStatus.BAD_REQUEST, "access 토큰이 만료되어 재발급했습니다.");
                     }
-                    response.setStatus(400);
-                    return;
                 }
 
                 case ACCESS -> {
