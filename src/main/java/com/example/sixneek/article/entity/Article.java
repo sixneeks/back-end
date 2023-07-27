@@ -1,31 +1,33 @@
 package com.example.sixneek.article.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+import com.example.sixneek.like.entity.Like;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
     private Long id;
-    private String tag;
-    private String title;
-    private String content;
     private String image;
-    private String likeCount;
+    private String title;
+    private String date;
+    @Column(length = 5000)
+    private String content;
+    private String tag;
 
-    @Builder
-    private Article(String tag, String title, String content, String image, String likeCount) {
-        this.tag = tag;
-        this.title = title;
-        this.content = content;
-        this.image = image;
-        this.likeCount = likeCount;
-    }
+    @Builder.Default
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<Like> likeList = new ArrayList<>();
 }

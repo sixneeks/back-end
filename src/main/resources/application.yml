@@ -13,3 +13,8 @@ spring:
 
   profiles:
     include: KEY
+
+  data:
+    redis:
+      host: localhost # 배포시 redis로 변경
+      port: 6379
